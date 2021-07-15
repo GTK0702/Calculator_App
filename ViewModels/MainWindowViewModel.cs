@@ -163,12 +163,19 @@ namespace Calculator.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// 計算過程の末尾を1文字消す。
+        /// </summary>
         private void BackSpaceCommandExcute()
         {
             model.BackSpace();
             ReDisplay();
         }
 
+        /// <summary>
+        /// 計算過程の末尾を1文字消せるか取得。
+        /// </summary>
+        /// <returns>計算過程を消せる場合は、true。その他false。</returns>
         private bool CanBackSpaceCommandExcute()
         {
             return true;

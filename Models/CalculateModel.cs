@@ -305,6 +305,7 @@ namespace Calculator.Models
             return result;
         }
 
+        //計算過程の末尾を1文字消す.
         public void BackSpace()
         {
             string formula = this.Formula;
