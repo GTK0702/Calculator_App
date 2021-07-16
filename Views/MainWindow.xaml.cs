@@ -30,91 +30,91 @@ namespace Calculator.Views
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(AllClearButton, new object[0]);
                     break;
-                case (Key.D0):
+                case (Key.NumPad0):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Zero, new object[0]);
                     break;
-                case (Key.D1):
+                case (Key.NumPad1):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(One, new object[0]);
                     break;
-                case (Key.D2):
+                case (Key.NumPad2):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Two, new object[0]);
                     break;
-                case (Key.D3):
+                case (Key.NumPad3):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Three, new object[0]);
                     break;
-                case (Key.D4):
+                case (Key.NumPad4):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Four, new object[0]);
                     break;
-                case (Key.D5):
+                case (Key.NumPad5):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Five, new object[0]);
                     break;
-                case (Key.D6):
+                case (Key.NumPad6):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Six, new object[0]);
                     break;
-                case (Key.D7):
+                case (Key.NumPad7):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Seven, new object[0]);
                     break;
-                case (Key.D8):
+                case (Key.NumPad8):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Eight, new object[0]);
                     break;
-                case (Key.D9):
+                case (Key.NumPad9):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Nine, new object[0]);
                     break;
-                case (Key.A):
+                case (Key.Add):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Add, new object[0]);
                     break;
-                case (Key.S):
+                case (Key.Subtract):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Sub, new object[0]);
                     break;
-                case (Key.M):
+                case (Key.Multiply):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Mul, new object[0]);
                     break;
-                case (Key.D):
+                case (Key.Divide):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(Div, new object[0]);
                     break;
-                case (Key.E):
+                case (Key.Enter):
                     typeof(ButtonBase)
                         .GetMethod("OnClick",
                             BindingFlags.Instance | BindingFlags.NonPublic)
@@ -127,19 +127,26 @@ namespace Calculator.Views
                         .Invoke(BackSpace, new object[0]);
                     break;
             }
-            if (e.Key == Key.L)
+            if (e.Key == Key.D8)
             {
-             typeof(ButtonBase)
-             .GetMethod("OnClick",
-             BindingFlags.Instance | BindingFlags.NonPublic)
-             .Invoke(LeftBracket, new object[0]);
+                if(Keyboard.Modifiers == ModifierKeys.Shift)
+                {
+                    typeof(ButtonBase)
+                    .GetMethod("OnClick",
+                    BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(LeftBracket, new object[0]);
+                }
             }
-            if (e.Key == Key.R)
+
+            if (e.Key == Key.D9)
             {
-                typeof(ButtonBase)
-                .GetMethod("OnClick",
-                BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(RightBracket, new object[0]);
+                if (Keyboard.Modifiers == ModifierKeys.Shift)
+                {
+                    typeof(ButtonBase)
+                    .GetMethod("OnClick",
+                    BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(RightBracket, new object[0]);
+                }
             }
 
         }

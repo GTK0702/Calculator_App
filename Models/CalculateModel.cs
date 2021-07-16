@@ -236,74 +236,189 @@ namespace Calculator.Models
         /// </summary>
         public void Calculate()
         {
-            // 計算式を解析
             string formula = this.Formula;
-            // 先頭の+を削除、最後に演算子がある場合は、削除
-            formula = formula.TrimStart('+').TrimEnd(new char[] { '+', '-', '*', '/' });
-            // -の前に+を付与
-            // 先頭の+を削除
-            formula = formula.Replace("-", "+-").TrimStart('+');
-            // +でSplit
-            string[] formulas = formula.Split('+');
-            // ばらした中身に*/がある場合は、計算する
-            // ただし、? * -xx の場合は、複数つに分かれているので注意
-            List<double> list = new List<double>();
-            string prev = "";
-            foreach (string work in formulas)
+            //計算回数
+            int OpCnt = 0;
+            //括弧処理の優先度
+            int nest = 0;
+            //小数点以下の位
+            int bit = 0;
+            //数値を格納
+            var Value = new List<Double>();
+            //演算子を格納
+            var Operator = new List<String>();
+            //優先度を格納
+            var Priority = new List<int>();
+            //文字
+            string chr;
+            //小数点以下の入力となるか判別
+            bool IsDecimal = false;
+
+            //辞書。数字と演算子。
+            var Number = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            var Operations = new char[] { '+', '-', '*', '/' };
+
+            //リストの初期化
+            int i = 0;
+            while (i <= formula.Length)
             {
-                if (work.EndsWith("*") == true || work.EndsWith("/") == true)
+                Value.Add(0);
+                Operator.Add("");
+                Priority.Add(0);
+                i += 1;
+            }
+
+            //計算過程の解析処理
+            i = 0;
+            while (i < formula.Length)
+            {
+                chr = formula.Substring(i, 1);
+
+                //chrが数字である場合の処理
+                if (chr.IndexOfAny(Number) != -1)
                 {
-                    prev += work;
-                }
-                else
-                {
-                    if (prev.Length == 0)
+                    //文字列に小数点が含まれるかどうかで判別。
+                    if (IsDecimal)
                     {
-                        if (work.Contains("*") == true || work.Contains("/") == true)
-                        {
-                            list.Add(CalcMulDiv(prev + work));
-                        }
-                        else
-                        {
-                            list.Add(Convert.ToDouble(work));
-                        }
+                        bit += 1;
+                        Value[OpCnt] += SmallPart(chr, bit);
                     }
                     else
                     {
-                        list.Add(CalcMulDiv(prev + work));
-                        prev = "";
+                        Value[OpCnt] = 10 * Value[OpCnt] + Convert.ToDouble(chr);
                     }
                 }
+
+                //chrが演算子である場合の処理
+                if (chr.IndexOfAny(Operations) != -1)
+                {
+                    Operator[OpCnt] = chr;
+                    if (chr == "+" || chr == "-")
+                    {
+                        Priority[OpCnt] = nest + 1;
+                    }
+                    else
+                    {
+                        Priority[OpCnt] = nest + 2;
+                    }
+                    OpCnt += 1;
+                    Value[OpCnt] = 0;
+                    IsDecimal = false;
+                    bit = 0;
+                }
+
+                //chrが括弧であるときの処理。括弧で囲まれる数式の優先度を上げる。
+                if (chr == "(")
+                {
+                    nest += 10;
+                }
+
+                if (chr == ")")
+                {
+                    nest -= 10;
+                }
+
+                //chrが小数点であるときの処理。
+                if (chr == ".")
+                {
+                    IsDecimal = true;
+                }
+
+                i += 1;
             }
-            // Listを全部足す
-            this.Result = list.Sum();
-        }
 
-
-        private double CalcMulDiv(string formula)
-        {
-            // *と/の前後に#を入れる
-            formula = formula.Replace("*", "#*#").Replace("/", "#/#");
-            // #でsplit
-            string[] formulas = formula.Split('#');
-
-            // 先頭を取得
-            double result = Convert.ToDouble(formulas[0]);
-
-            // 2番目から順番に計算していく
-            for (int i = 1; i < formulas.Length - 1; i++)
+            //計算処理
+            while (OpCnt > 0)
             {
-                if (formulas[i] == "*")
+                int ip = 0;
+
+                int j = 1;
+                while (j < OpCnt)
                 {
-                    result *= Convert.ToDouble(formulas[i + 1]);
+                    if (Priority[ip] < Priority[j])
+                    {
+                        ip = j;
+                    }
+                    j += 1;
                 }
-                else if (formulas[i] == "/")
+
+                chr = Operator[ip];
+                if (chr == "+")
                 {
-                    result /= Convert.ToDouble(formulas[i + 1]);
+                    Value[ip] += Value[ip + 1];
                 }
+                if (chr == "-")
+                {
+                    Value[ip] -= Value[ip + 1];
+                }
+                if (chr == "*")
+                {
+                    Value[ip] *= Value[ip + 1];
+                }
+                if (chr == "/")
+                {
+                    Value[ip] /= Value[ip + 1];
+                }
+
+                j = ip + 1;
+                while (j < OpCnt)
+                {
+                    Value[j] = Value[j + 1];
+                    Operator[j - 1] = Operator[j];
+                    Priority[j - 1] = Priority[j];
+                    j += 1;
+                }
+                OpCnt -= 1;
             }
-            return result;
+            this.Result += Value[0];
         }
+
+        /// <summary>
+        /// 受取った数字を小数にします。
+        /// </summary>
+        private double SmallPart(string s,int i)
+        {
+            int j = 1;
+            double place = 1;
+
+            while (j <= i)
+            {
+                place *= 0.1;
+                j += 1;
+            }
+            return Convert.ToDouble(s) * place;
+        }
+
+        //private int CountChar(string s,string t)
+        //{
+        //    return s.Length - s.Replace(s, "").Length;
+        //}
+
+
+        //private double CalcMulDiv(string formula)
+        //{
+        //    // *と/の前後に#を入れる
+        //    formula = formula.Replace("*", "#*#").Replace("/", "#/#");
+        //    // #でsplit
+        //    string[] formulas = formula.Split('#');
+
+        //    // 先頭を取得
+        //    double result = Convert.ToDouble(formulas[0]);
+
+        //    // 2番目から順番に計算していく
+        //    for (int i = 1; i < formulas.Length - 1; i++)
+        //    {
+        //        if (formulas[i] == "*")
+        //        {
+        //            result *= Convert.ToDouble(formulas[i + 1]);
+        //        }
+        //        else if (formulas[i] == "/")
+        //        {
+        //            result /= Convert.ToDouble(formulas[i + 1]);
+        //        }
+        //    }
+        //    return result;
+        //}
 
         //計算過程の末尾を1文字消す.
         public void BackSpace()
